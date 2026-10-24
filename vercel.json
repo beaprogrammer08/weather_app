@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "functions": {
+    "api/weather.js": {
+      "maxDuration": 10
+    }
+  }
+}

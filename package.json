@@ -1,0 +1,10 @@
+{
+  "name": "weather-mood-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Premium weather dashboard with a server-side WeatherAPI proxy for Vercel",
+  "engines": { "node": ">=18.x" },
+  "scripts": {
+    "start": "npx vercel dev"
+  }
+}
