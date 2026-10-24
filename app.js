@@ -176,11 +176,20 @@
 
       if (!response.ok) {
         const apiMessage = currentParsed?.error?.message || currentParsed?.error || currentParsed?.message;
+        const missingRoute = response.status === 404 && !currentParsed;
         const fallback = response.status === 429 ? "Too many requests. Please wait and retry." :
           response.status >= 500 ? "The weather service is temporarily unavailable. Please retry." :
-          "We couldn't find that city. Check the spelling and try again.";
-        dashboard.innerHTML = `<div class="empty-state"><div class="empty-orbit"><span>!</span></div><p class="eyebrow">WEATHER UNAVAILABLE</p><p>${escapeHtml(typeof apiMessage === "string" ? apiMessage : fallback)}</p></div>`;
-        setStatus(`Request failed (${response.status}). You can correct the city or retry.`, "error");
+          response.status === 404 ? "We couldn't find that city. Check the spelling and try again." :
+          "The weather request could not be completed.";
+        const message = missingRoute
+          ? "The weather API route returned 404. Deploy the latest version and confirm /api/weather is included."
+          : typeof apiMessage === "string" ? apiMessage : fallback;
+        dashboard.innerHTML = `<div class="empty-state"><div class="empty-orbit"><span>!</span></div><p class="eyebrow">WEATHER UNAVAILABLE</p><p>${escapeHtml(message)}</p></div>`;
+        setStatus(missingRoute
+          ? "Weather API route not found (404). Redeploy the latest version with /api/weather."
+          : response.status === 404
+            ? `City lookup failed (404). ${message}`
+            : `Request failed (${response.status}). ${message}`, "error");
         return;
       }
 
